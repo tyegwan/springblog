@@ -4,6 +4,8 @@ import com.tenco.blog._core.util.Define;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.aspectj.lang.annotation.Pointcut;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,6 +19,19 @@ import java.io.IOException;
 public class UserController {
 
     private final UserService userService;
+    // 초기 파라미터 값을 가져 오는 방법
+    @Value("${oauth.kakao.client-id}")
+    private String kakaoClientId;
+    @Value("${oauth.kakao.client-secret}")
+    private String KakaoClientSecret;
+
+    @Pointcut
+    public void init(){
+        log.info("현재 적용된 클라이언트 아이디 확인 : " + kakaoClientId);
+        log.info("현재 적용된 클라이언트 아이디 확인 : " +  KakaoClientSecret);
+
+    }
+
 
     // 프로필 이미지 삭제 요청
     @PostMapping("/user/profile-image/delete")

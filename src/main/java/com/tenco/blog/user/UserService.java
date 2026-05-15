@@ -24,8 +24,7 @@ public class UserService {
 
     private final UserRepository userRepository;
 
-
-    // http://192.168.4.101:8080/join-form (강사 서버 컴퓨터 주소)
+// http://192.168.4.101:8080/join-form (강사 서버 컴퓨터 주소)
     /**
      * 회원 가입 처리
      * @param joinDTO (사용자 회원가입 요청 정보)
@@ -58,9 +57,12 @@ public class UserService {
         }
         // 코드 수정
         User user = joinDTO.toEntity(profileImageFilename);
+
+        // 기본 권한 추가 (일반 사용자로 설정)
+        user.addRole(Role.USER);
+
         return userRepository.save(user);
     }
-
     /**
      * 로그인 처리
      * @param loginDTO (사용자가 요청한 로그인 정보)
@@ -68,7 +70,7 @@ public class UserService {
      */
     public User 로그인(UserRequest.LoginDTO loginDTO) {
         log.info("로그인 서비스 시작");
-        User userEntity = userRepository.findByUsernameAndPassword(loginDTO.getUsername(), loginDTO.getPassword())
+        User userEntity = userRepository.findByUsernameAndPasswordWithRoles(loginDTO.getUsername(), loginDTO.getPassword())
                 .orElseThrow(() -> {
                     log.warn("로그인 실패 - 사용자 이름 또는 사용자 비번 잘못 입력");
                     return new Exception400("사용자명 또는 비밀번호가 올바르지 않습니다");
